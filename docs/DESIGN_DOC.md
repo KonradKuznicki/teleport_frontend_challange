@@ -49,9 +49,10 @@ at level 5
 #### Infrastructure
 ##### What is going to be done
 1. project will be build into single docker image
-2. Continuous Integration pipeline on github actions to keep project in shape 
 ##### What is not going to be done
 1. Deployment
+2. Continuous Integration pipeline on github actions to keep project in shape
+
 
 #### Security
 ##### 
