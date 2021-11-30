@@ -24,22 +24,22 @@ at level 5
 ##### What is going to be done
  1. List files and directories in a chosen directory 
  2. Navigate directories
- 3. Upload files
- 4. Search and sort files
- 5. User Authentication
+ 3. Search and sort files
+ 4. User Authentication
 
 ##### What is not going to be done
  1. no user authentication related operations (only login)
  2. no file and directory management: no rename, move delete copy (only upload and list)
+ 3. no file upload
 
 #### Backend
 ##### What is going to be done
 1. API 
    1. for login 
    2. for directory listing (with authentication verification)
-   3. for file upload (with authentication verification)
-2. In memory file storage
-   1. with some default directory structure 
+2. file storage
+   1. file repository implementation will be files read from folder inside docker
+   2. default directory structure
 
 ##### What is not going to be done
  1. no permanent storage 
@@ -59,7 +59,19 @@ at level 5
 1. user authentication JWT based
 2. minimal package requirements
 3. OWASP ZAP tests
-4. reduced exposed information by separating frontends for authentication and file management 
+4. reduce exposed information by frontend wih 2 builds based on the same sources
+   1. login page 
+      - publicly available
+      - only with login page dependencies
+   2. file manager 
+      - available after authentication
+      - only with resources necessary for file management
+5. file reading protection
+   1. app run in docker as a user with restricted rights only to read single directory with resources
+   2. when resolving path app cat "slugify" all directory entries (but . and ..) and then remove them <br />
+      longest matching part by longest matching part<br />
+      until the entire request path is resolved<br />
+      it would be slower but app would avoid doing syscall with user input
 ##### Bad things - that should be fixed for real world scenario
 1. self made ssl certificate 
 2. remote loaded fonts and Icons 
