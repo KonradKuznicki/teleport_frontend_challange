@@ -55,7 +55,7 @@ at level 5
 
 #### Security
 ##### 
-1. user authentication JWT based
+1. user authentication opaque token based
 2. minimal package requirements
 3. OWASP ZAP tests
 4. reduce exposed information by frontend wih 2 builds based on the same sources
@@ -65,13 +65,24 @@ at level 5
    2. file manager 
       - available after authentication
       - only with resources necessary for file management
-5. file reading protection
-   1. app run in docker as a user with restricted rights only to read single directory with resources
-   2. when resolving path app cat "slugify" all directory entries (but . and ..) and then remove them <br />
-      longest matching part by longest matching part<br />
-      every time going deeper into directory structure<br />
-      until the entire request path is resolved<br />
-      it would be slower but app would avoid doing syscall with user input
+5. file reading protection (path traversal attacks)
+   1. setup directory in docker where files would be accessible and run the app with user that can only access this path
+   2. filter path requested by the user (though it's hard to filter out all possible wierdness) - and this stage is probably unnecessary
+   3. verify path again after canonicalization by https://pkg.go.dev/path/filepath Abs
+6. open redirects 
+   1. when not logged in user will request file manager (/files/<some path>)
+   2. app will try to validate requested hostname and path 
+   3. then create a secure, http only, samesite cookie with path only, if it's correct 
+   4. redirect to /login 
+   5. on /login Login SPA will be loaded 
+   6. after successful login API will validate cookie content again 
+   7. and respond with the path to which Login SPA should redirect itself
+7. password hashing
+   1. Argon2id
+8. CSRF 
+   1. double submit cookie
+
+
 ##### Bad things - that should be fixed for real world scenario
 1. self made ssl certificate 
 2. remote loaded fonts and Icons 
@@ -138,7 +149,6 @@ at level 5
 ## Backend
 
 ### tools
-- jwt-go
 - testify
 - golangci-lint
 
