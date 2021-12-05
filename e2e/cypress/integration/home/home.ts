@@ -1,6 +1,6 @@
 import { Given, Then } from "cypress-cucumber-preprocessor/steps";
 
-const url = 'http://localhost:3000'
+const url = 'https://localhost:3001'
 
 const visited = [];
 
