@@ -11,14 +11,16 @@ FROM golang AS backend
 
 WORKDIR /backend
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/dpe-us-eu
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /backend/app
 
 
 
 FROM scratch
 
-COPY --from=frontend /frontend/bu /index.js
+WORKDIR /soluiton
+COPY --from=frontend /frontend/bu ./index.js
+COPY --from=backend /backend/app ./
 ENV NODE_SERVER_PATH="/index.js"
-ENTRYPOINT ["./dpe-us-eu"]
+ENTRYPOINT ["./app"]
 CMD ["help"]
 

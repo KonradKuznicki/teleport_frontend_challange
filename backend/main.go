@@ -9,9 +9,13 @@ import (
 
 func main() {
 	// Set routing rules
+
+	authenticator := auth.NewAuth()
+
+	http.HandleFunc("/user/login", authenticator.LoginHandler)
 	http.HandleFunc("/login", auth.StaticsHandler)
 	http.HandleFunc("/files", auth.Wrapper(files.SataticsHandler))
-	http.HandleFunc("/", Tmp)
+	http.HandleFunc("/", IndexHandler)
 
 	//Use the default DefaultServeMux.
 	err := http.ListenAndServe(":3000", nil)
@@ -20,7 +24,7 @@ func main() {
 	}
 }
 
-func Tmp(w http.ResponseWriter, r *http.Request) {
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" {
 		http.Redirect(w, r, "/files", http.StatusPermanentRedirect)
 	} else {

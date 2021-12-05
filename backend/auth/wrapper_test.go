@@ -2,35 +2,43 @@ package auth_test
 
 import (
 	"challenge/auth"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"log"
 	"net/http"
-	"net/http/httptest"
-	"testing"
 )
 
-func TestHandlerWrapper(t *testing.T) {
-	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
-	// pass 'nil' as the third parameter.
+func (s *TestAuthSuite) TestWrapper_redirectWhenNotAuthenticated() {
+	s.handler = auth.Wrapper(mockHandler)
+
+	s.NotNil(s.Auth)
 	req, err := http.NewRequest("GET", "/login", nil)
 	if err != nil {
-		t.Fatal(err)
+		s.Fail("error creating request")
 	}
 
-	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(auth.Wrapper(mockHandler))
+	s.handler.ServeHTTP(s.recorder, req)
 
-	// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
-	// directly and pass in our Request and ResponseRecorder.
-	handler.ServeHTTP(rr, req)
-
-	assert.Equal(t, rr.Code, http.StatusFound)
-
-	// assert.Contains(t, rr.Header()., "login form")
-
+	s.Equal(s.recorder.Code, http.StatusFound)
 }
+
+func (s *TestAuthSuite) TestWrapper_dontRedirectWhenAuthenticated() {
+	s.handler = auth.Wrapper(mockHandler)
+
+	s.NotNil(s.Auth)
+	req, err := http.NewRequest("GET", "/files", nil)
+	if err != nil {
+		s.Fail("error creating request")
+	}
+
+	http.SetCookie(s.recorder, &http.Cookie{Name: "auth", Value: "true"})
+	req.Header.Set("Cookie", s.recorder.Header().Get("Set-Cookie"))
+
+	s.handler.ServeHTTP(s.recorder, req)
+
+	s.Equal(s.recorder.Code, http.StatusOK)
+}
+
+////// mocks
 
 func mockHandler(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Add("content-type", "text/html")
