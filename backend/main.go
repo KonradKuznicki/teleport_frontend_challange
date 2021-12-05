@@ -12,12 +12,12 @@ func main() {
 
 	log.Println("starting")
 
-	mux := CreateRouter()
+	mux := SetupRouter()
 
 	server.ServeTLS(mux, "../resources/server.ecdsa.crt", "../resources/server.ecdsa.key")
 }
 
-func CreateRouter() *http.ServeMux {
+func SetupRouter() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	authenticator := auth.NewAuth()

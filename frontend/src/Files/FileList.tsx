@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Box, Cell, CustomIcon, Row } from '../general/Elements';
-import { Upload } from './Upload';
+import { Box, CustomIcon } from '../general/Elements';
 import { Path } from './Path';
 import { FileType } from './FileType';
 
@@ -57,14 +56,7 @@ const files = [
 export function FilesList() {
     return (
         <ListBox>
-            <Row style={{ margin: '0' }}>
-                <Cell>
-                    <Path parts={['documents']} />
-                </Cell>
-                <Cell style={{ textAlign: 'right' }}>
-                    <Upload />
-                </Cell>
-            </Row>
+            <Path parts={['documents']} />
 
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <THead>

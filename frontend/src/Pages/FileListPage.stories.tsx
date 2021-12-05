@@ -1,24 +1,19 @@
 import React from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
-import { Page, theme } from '../general/Elements';
-import { PageHead } from '../Files/PageHead';
-import { FilesList } from '../Files/FileList';
-
-
-function ListPage() {
-    return <Page>
-        <PageHead />
-        <FilesList />
-    </Page>;
-}
+import { theme } from '../general/Elements';
+import { ListFilesPage } from './ListFilesPage';
 
 export default {
     title: 'Pages/FilesListPage',
-    component: ListPage,
-} as ComponentMeta<typeof ListPage>;
+    component: ListFilesPage,
+} as ComponentMeta<typeof ListFilesPage>;
 
-const Template: ComponentStory<typeof ListPage> = () => <ThemeProvider theme={theme}><ListPage /></ThemeProvider>;
+const Template: ComponentStory<typeof ListFilesPage> = () => (
+    <ThemeProvider theme={theme}>
+        <ListFilesPage />
+    </ThemeProvider>
+);
 
 export const Default = Template.bind({});
 

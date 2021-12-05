@@ -1,13 +1,11 @@
-import { Given, Then } from "cypress-cucumber-preprocessor/steps";
+import { Given, Then } from 'cypress-cucumber-preprocessor/steps';
 
-const url = 'http://localhost:3000'
-Given('I open Home page', () => {
-    cy.visit(url)
-})
+const url = 'http://localhost:3000';
+Given('I open file manager', () => {
+    cy.visit(url);
+    cy.viewport(1600, 1200);
+});
 
-Then(`I see {string} in the body`, (txt) => {
-    cy.get('p').should('include.text', txt);
-})
-Then(/^I am redirected to file manager$/, function() {
-    cy.location('pathname').should('be', '/files')
+Then(/^I see (.*) in the body$/, (txt) => {
+    cy.get('body').should('include.text', txt);
 });
