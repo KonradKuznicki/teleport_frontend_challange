@@ -1,6 +1,6 @@
 import { Given, Then, When } from "cypress-cucumber-preprocessor/steps";
 
-const url = 'http://localhost:3000'
+const url = 'https://localhost:3001'
 Given('I open Home page', () => {
     cy.visit(url)
 });
@@ -35,6 +35,23 @@ When(/^I submit valid login form$/, function() {
     cy.contains('log me in').click()
 });
 Then(/^I am authenticated$/, function() {
-    cy.get('body').not('include.text', "login");
+    cy.get('body').not('include.text', "files");
 
+});
+
+function LogMeIn() {
+    cy.contains('log me in').click();
+}
+
+///
+Given(/^I am authenticated user$/, function() {
+    cy.visit(url)
+    LogMeIn();
+});
+When(/^I log out$/, function() {
+    cy.visit(url+"/user/logout")
+});
+Then(/^I am unauthenticated$/, function() {
+    cy.visit(url+"/files")
+    cy.location('pathname').should('equal', '/login')
 });

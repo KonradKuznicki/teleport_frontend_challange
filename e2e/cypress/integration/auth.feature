@@ -16,3 +16,19 @@ Feature: Authentication
     When I submit valid login form
     Then I am authenticated
     And I am redirected to file manager
+
+  Scenario: log out
+    Given I am authenticated user
+    When I log out
+    Then I am unauthenticated
+    And I am redirected to login form
+
+
+  Scenario: in out in
+    Given I am authenticated user
+    When I log out
+    Then I am unauthenticated
+    And I am redirected to login form
+    When I submit valid login form
+    Then I am authenticated
+    And I am redirected to file manager
