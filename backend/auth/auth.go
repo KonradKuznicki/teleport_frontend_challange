@@ -2,6 +2,7 @@ package auth
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -99,7 +100,9 @@ func (a *Auth) CreateUser(login string, pass string) error {
 	if err != nil {
 		return err
 	}
-	a.userRepository.AddUser(NewUserEntry(login, hash))
+	userEntry := NewUserEntry(login, hash)
+	log.Printf("new user created: pass: %s, user: %s", pass, userEntry)
+	a.userRepository.AddUser(userEntry)
 	return nil
 }
 

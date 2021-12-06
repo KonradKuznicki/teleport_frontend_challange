@@ -22,7 +22,7 @@ func main() {
 func SetupRouter() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	authenticator := auth.NewAuth(userRepositories.NewInMemoryUserRepository(), auth.NewEasyHash("salt"))
+	authenticator := auth.NewAuth(userRepositories.NewInMemoryUserRepository(), auth.NewHardHasher())
 	err := authenticator.CreateUser("user1", "pass1")
 	if err != nil {
 		log.Fatal(err)
