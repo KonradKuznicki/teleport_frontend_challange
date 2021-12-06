@@ -2,6 +2,8 @@ package auth_test
 
 import (
 	"challenge/auth"
+	"encoding/hex"
+	"fmt"
 	"github.com/stretchr/testify/suite"
 	"testing"
 	"time"
@@ -58,9 +60,10 @@ type MockEncryptor struct {
 }
 
 func (m MockEncryptor) Decrypt(token string) (string, error) {
-	return token, nil
+	decodeString, err := hex.DecodeString(token)
+	return string(decodeString), err
 }
 
 func (m MockEncryptor) Encrypt(confidential string) (string, error) {
-	return confidential, nil
+	return fmt.Sprintf("%x", confidential), nil
 }
