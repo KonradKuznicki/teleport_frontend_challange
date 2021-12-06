@@ -29,15 +29,17 @@ type Hasher interface {
 }
 
 type Auth struct {
-	userRepository UserRepository
-	hasher         Hasher
+	userRepository      UserRepository
+	hasher              Hasher
+	sessionManager      *SessionManager
+	cookieMaxAgeSeconds int
 }
 
 func (a *Auth) LoginHandler(writer http.ResponseWriter, request *http.Request) {
 	http.SetCookie(writer, &http.Cookie{
 		Name:     "auth",
 		Value:    "true",
-		MaxAge:   300,
+		MaxAge:   a.cookieMaxAgeSeconds,
 		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
@@ -106,9 +108,19 @@ func (a *Auth) CreateUser(login string, pass string) error {
 	return nil
 }
 
-func NewAuth(userRepository UserRepository, hasher Hasher) *Auth {
+func (a *Auth) CheckSessionOk(token string) (bool, error) {
+	return a.sessionManager.Valid(token)
+}
+
+func (a *Auth) CreateSession(user StorableUser) (string, error) {
+	return a.sessionManager.Create(user)
+}
+
+func NewAuth(userRepository UserRepository, hasher Hasher, sessionManager *SessionManager, cookieMaxAgeSeconds int) *Auth {
 	return &Auth{
-		userRepository: userRepository,
-		hasher:         hasher,
+		userRepository:      userRepository,
+		hasher:              hasher,
+		sessionManager:      sessionManager,
+		cookieMaxAgeSeconds: cookieMaxAgeSeconds,
 	}
 }

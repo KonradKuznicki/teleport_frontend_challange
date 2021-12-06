@@ -5,9 +5,11 @@ import (
 	"challenge/auth/userRepositories"
 	"challenge/files"
 	"challenge/server"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -22,7 +24,14 @@ func main() {
 func SetupRouter() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	authenticator := auth.NewAuth(userRepositories.NewInMemoryUserRepository(), auth.NewHardHasher())
+	notVerySecurePass := fmt.Sprintf("%x", strings.Repeat("A", 32))
+
+	authenticator := auth.NewAuth(
+		userRepositories.NewInMemoryUserRepository(),
+		auth.NewHardHasher(),
+		auth.NewSessionManager(auth.NewAESEncryptor(notVerySecurePass), "magic secret", time.Minute),
+		70)
+
 	err := authenticator.CreateUser("user1", "pass1")
 	if err != nil {
 		log.Fatal(err)

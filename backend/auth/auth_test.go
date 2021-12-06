@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -26,7 +27,7 @@ type TestAuthSuite struct {
 func (s *TestAuthSuite) SetupSuite() {
 	s.InMemoryUserRepository = userRepositories.NewInMemoryUserRepository()
 	s.hasher = auth.NewEasyHash("aslt")
-	s.Auth = auth.NewAuth(s.InMemoryUserRepository, s.hasher)
+	s.Auth = auth.NewAuth(s.InMemoryUserRepository, s.hasher, auth.NewSessionManager(&MockEncryptor{}, "magic secret", time.Second), 2)
 }
 func (s *TestAuthSuite) SetupTest() {
 	s.recorder = httptest.NewRecorder()
