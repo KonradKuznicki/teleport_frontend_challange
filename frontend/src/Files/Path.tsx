@@ -17,10 +17,15 @@ type PathPart = {
     path: string;
 };
 
-const DefaultRoot: PathPart[] = [{ name: 'My Files', path: '' }];
+const DefaultRoot: PathPart[] = [{ name: 'My Files', path: '/' }];
 
 export function Path({ parts, ...props }: { parts: string[] }) {
-    const items = DefaultRoot.concat(parts.map((i) => ({ name: i, path: i })));
+    const items = DefaultRoot.concat(
+        parts.map((i, c, a) => ({
+            name: i,
+            path: (c ? a[c - 1] : '') + '/' + i,
+        })),
+    );
 
     const parents = items.slice(0, -1);
     const current = items[items.length - 1];

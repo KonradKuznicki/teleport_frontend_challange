@@ -8,9 +8,9 @@ test('renders 4k', () => {
     expect(size).toBeInTheDocument();
 });
 
-test('renders 4 items', () => {
+test('renders folder', () => {
     render(<Size size={4} folder />);
-    const size = screen.getByText(/4 items/i);
+    const size = screen.getByText(/--/i);
     expect(size).toBeInTheDocument();
 });
 

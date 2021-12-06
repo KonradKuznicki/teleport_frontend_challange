@@ -31,7 +31,7 @@ export function format(size: number): string {
 
 export function Size({ size, folder }: { size: number; folder?: boolean }) {
     if (folder) {
-        return <span>{size} items</span>;
+        return <span>--</span>;
     }
     return <span>{format(size)}</span>;
 }

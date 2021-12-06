@@ -70,7 +70,11 @@ export function FilesList({
                     {files.map(({ name, type, size }) => (
                         <TR
                             key={name}
-                            onClick={() => navigate('/files/' + name)}
+                            onClick={() =>
+                                navigate(
+                                    '/files/' + path.concat([name]).join('/'),
+                                )
+                            }
                         >
                             <TD>
                                 <FileType type={type} />
