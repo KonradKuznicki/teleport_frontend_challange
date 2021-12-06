@@ -2,6 +2,7 @@ package main
 
 import (
 	"challenge/auth"
+	"challenge/auth/userRepositories"
 	"challenge/files"
 	"challenge/server"
 	"log"
@@ -21,7 +22,16 @@ func main() {
 func SetupRouter() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	authenticator := auth.NewAuth()
+	authenticator := auth.NewAuth(userRepositories.NewInMemoryUserRepository(), auth.NewEasyHash("salt"))
+	err := authenticator.CreateUser("user1", "pass1")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = authenticator.CreateUser("user2", "pass2")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	server.Handle(mux, "/API/v1/user/logout", enableCors(authenticator.LogoutHandler))
 	server.Handle(mux, "/API/v1/user/login", enableCors(authenticator.LoginHandler))
 	server.Handle(mux, "/login", auth.StaticsHandler)

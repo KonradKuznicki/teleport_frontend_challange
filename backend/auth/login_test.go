@@ -26,3 +26,15 @@ func (s *TestAuthSuite) TestLogin_handleCorrectCreds() {
 		Raw:      cookie.Raw,
 	})
 }
+
+func (s *TestAuthSuite) TestLogin_checkCredsOk() {
+	_ = s.Auth.CreateUser("user1", "pass1")
+	user, _ := s.Auth.CheckCredsOk("user1", "pass1")
+	s.NotNil(user)
+}
+
+func (s *TestAuthSuite) TestLogin_checkCredsFail() {
+	_ = s.Auth.CreateUser("user1", "pass1")
+	user, _ := s.Auth.CheckCredsOk("user1", "bad pass")
+	s.Nil(user)
+}

@@ -2,6 +2,7 @@ package auth_test
 
 import (
 	"challenge/auth"
+	"challenge/auth/userRepositories"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -15,13 +16,17 @@ func TestAuth(t *testing.T) {
 
 type TestAuthSuite struct {
 	suite.Suite
-	Auth     *auth.Auth
-	handler  http.HandlerFunc
-	recorder *httptest.ResponseRecorder
+	Auth                   *auth.Auth
+	handler                http.HandlerFunc
+	recorder               *httptest.ResponseRecorder
+	InMemoryUserRepository *userRepositories.InMemoryUserRepository
+	hasher                 *auth.EasyHash
 }
 
 func (s *TestAuthSuite) SetupSuite() {
-	s.Auth = auth.NewAuth()
+	s.InMemoryUserRepository = userRepositories.NewInMemoryUserRepository()
+	s.hasher = auth.NewEasyHash("aslt")
+	s.Auth = auth.NewAuth(s.InMemoryUserRepository, s.hasher)
 }
 func (s *TestAuthSuite) SetupTest() {
 	s.recorder = httptest.NewRecorder()
