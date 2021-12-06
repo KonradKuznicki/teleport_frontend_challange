@@ -34,8 +34,13 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" {
 		http.Redirect(w, r, "/files", http.StatusPermanentRedirect)
 	} else if strings.Index(r.URL.Path, "/API/v1/files") == 0 {
-		log.Println("files matched")
-		enableCors(files.FilesHandler)(w, r)
+		log.Println("files api")
+		fm, err := files.NewFileManager("../resources/traversable")
+		if err != nil {
+			log.Printf("cannot open file manager: %v", err)
+			http.Error(w, "server error", http.StatusInternalServerError)
+		}
+		enableCors(fm.FilesHandler)(w, r)
 	} else {
 		http.NotFound(w, r)
 	}
