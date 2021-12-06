@@ -33,3 +33,32 @@ func (a *Auth) Wrapper(handlerFunc http.HandlerFunc) http.HandlerFunc {
 		}
 	}
 }
+
+func (a *Auth) WrapperAPI(handlerFunc http.HandlerFunc) http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		cookie, err := request.Cookie("auth")
+		if err != nil {
+			log.Printf("wierd! error reading cookie! %v", err)
+		}
+
+		if cookie != nil {
+			valid, err := a.IsTokenValid(cookie.Value)
+			if err != nil {
+				log.Println("error validating token ", err.Error())
+				http.Error(writer, "access denied", http.StatusForbidden)
+				return
+			}
+			if valid {
+				log.Println("valid user")
+				handlerFunc(writer, request)
+				return
+			}
+			log.Println("invalid token ")
+			http.Error(writer, "access denied", http.StatusForbidden)
+			return
+		} else {
+			log.Println("no cookie denied")
+			http.Error(writer, "access denied", http.StatusForbidden)
+		}
+	}
+}

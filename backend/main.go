@@ -45,23 +45,25 @@ func SetupRouter() *http.ServeMux {
 	server.Handle(mux, "/API/v1/user/login", enableCors(authenticator.LoginHandler))
 	server.Handle(mux, "/login", auth.StaticsHandler)
 	server.Handle(mux, "/files", authenticator.Wrapper(files.SataticsHandler))
-	server.Handle(mux, "/", IndexHandler)
+	server.Handle(mux, "/", IndexHandler(authenticator.WrapperAPI))
 	return mux
 }
 
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/" {
-		http.Redirect(w, r, "/files", http.StatusPermanentRedirect)
-	} else if strings.Index(r.URL.Path, "/API/v1/files") == 0 {
-		log.Println("files api")
-		fm, err := files.NewFileManager("../resources/traversable")
-		if err != nil {
-			log.Printf("cannot open file manager: %v", err)
-			http.Error(w, "server error", http.StatusInternalServerError)
+func IndexHandler(authWrapper func(handlerFunc http.HandlerFunc) http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/" {
+			http.Redirect(w, r, "/files", http.StatusPermanentRedirect)
+		} else if strings.Index(r.URL.Path, "/API/v1/files") == 0 {
+			log.Println("files api")
+			fm, err := files.NewFileManager("../resources/traversable")
+			if err != nil {
+				log.Printf("cannot open file manager: %v", err)
+				http.Error(w, "server error", http.StatusInternalServerError)
+			}
+			enableCors(authWrapper(fm.FilesHandler))(w, r)
+		} else {
+			http.NotFound(w, r)
 		}
-		enableCors(fm.FilesHandler)(w, r)
-	} else {
-		http.NotFound(w, r)
 	}
 }
 
