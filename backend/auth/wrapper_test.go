@@ -1,14 +1,13 @@
 package auth_test
 
 import (
-	"challenge/auth"
 	"io"
 	"log"
 	"net/http"
 )
 
 func (s *TestAuthSuite) TestWrapper_redirectWhenNotAuthenticated() {
-	s.handler = auth.Wrapper(mockHandler)
+	s.handler = s.Auth.Wrapper(mockHandler)
 
 	s.NotNil(s.Auth)
 	req, err := http.NewRequest("GET", "/login", nil)
@@ -22,7 +21,9 @@ func (s *TestAuthSuite) TestWrapper_redirectWhenNotAuthenticated() {
 }
 
 func (s *TestAuthSuite) TestWrapper_dontRedirectWhenAuthenticated() {
-	s.handler = auth.Wrapper(mockHandler)
+	_ = s.Auth.CreateUser("user1", "pass1")
+	token, _ := s.Auth.Login("user1", "pass1")
+	s.handler = s.Auth.Wrapper(mockHandler)
 
 	s.NotNil(s.Auth)
 	req, err := http.NewRequest("GET", "/files", nil)
@@ -30,7 +31,7 @@ func (s *TestAuthSuite) TestWrapper_dontRedirectWhenAuthenticated() {
 		s.Fail("error creating request")
 	}
 
-	http.SetCookie(s.recorder, &http.Cookie{Name: "auth", Value: "true"})
+	http.SetCookie(s.recorder, &http.Cookie{Name: "auth", Value: token})
 	req.Header.Set("Cookie", s.recorder.Header().Get("Set-Cookie"))
 
 	s.handler.ServeHTTP(s.recorder, req)

@@ -26,7 +26,7 @@ type TestAuthSuite struct {
 
 func (s *TestAuthSuite) SetupSuite() {
 	s.InMemoryUserRepository = userRepositories.NewInMemoryUserRepository()
-	s.hasher = auth.NewEasyHash("aslt")
+	s.hasher = auth.NewEasyHash("salt")
 	s.Auth = auth.NewAuth(s.InMemoryUserRepository, s.hasher, auth.NewSessionManager(&MockEncryptor{}, "magic secret", time.Second), 2)
 }
 func (s *TestAuthSuite) SetupTest() {

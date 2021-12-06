@@ -44,7 +44,7 @@ func SetupRouter() *http.ServeMux {
 	server.Handle(mux, "/API/v1/user/logout", enableCors(authenticator.LogoutHandler))
 	server.Handle(mux, "/API/v1/user/login", enableCors(authenticator.LoginHandler))
 	server.Handle(mux, "/login", auth.StaticsHandler)
-	server.Handle(mux, "/files", auth.Wrapper(files.SataticsHandler))
+	server.Handle(mux, "/files", authenticator.Wrapper(files.SataticsHandler))
 	server.Handle(mux, "/", IndexHandler)
 	return mux
 }
