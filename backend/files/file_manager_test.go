@@ -47,7 +47,7 @@ func (s *TestFileManagerSuite) TestFileManager_directMatch() {
 	folder, err := s.FileManager.ListFolder("notes.txt")
 	s.Nil(err)
 	s.Equal([]*files.File{
-		{Name: "notes.txt", Type: "text", Size: 15},
+		{Name: "notes.txt", Type: "txt", Size: 15},
 	}, folder)
 }
 
@@ -58,7 +58,7 @@ func (s *TestFileManagerSuite) TestFileManager_list() {
 		{Name: "documents", Type: "folder", Size: 0},
 		{Name: "empty", Type: "folder", Size: 0},
 		{Name: "images", Type: "folder", Size: 0},
-		{Name: "notes.txt", Type: "text", Size: 15},
+		{Name: "notes.txt", Type: "txt", Size: 15},
 	}, folder)
 }
 

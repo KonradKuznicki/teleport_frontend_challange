@@ -93,11 +93,22 @@ func (m *FileManager) tryExactFileMatch(path string) ([]*File, FileManagerError)
 		return nil, nil
 	}
 
+	ftype := computeFileType(fi.Name())
+
 	return []*File{{
 		Name: fi.Name(),
 		Size: fi.Size(),
-		Type: "text",
+		Type: ftype,
 	}}, nil
+}
+
+func computeFileType(name string) string {
+	ftype := "unknown"
+	split := strings.Split(name, ".")
+	if len(split) > 0 {
+		ftype = split[len(split)-1]
+	}
+	return ftype
 }
 
 func (m *FileManager) computePath(subPath string) (string, FileManagerError) {
@@ -167,7 +178,7 @@ func itemType(file fs.FileInfo) (string, int64) {
 	if file.IsDir() {
 		return "folder", 0
 	}
-	return "text", file.Size()
+	return computeFileType(file.Name()), file.Size()
 }
 
 func NewFileManager(rootPath string) (*FileManager, error) {
