@@ -12,27 +12,34 @@ const Item = styled.li`
     margin: 5px;
 `;
 
-const DefaultRoot: string[] = ['My Files'];
+type PathPart = {
+    name: string;
+    path: string;
+};
+
+const DefaultRoot: PathPart[] = [{ name: 'My Files', path: '' }];
 
 export function Path({ parts, ...props }: { parts: string[] }) {
-    const items = DefaultRoot.concat(parts);
+    const items = DefaultRoot.concat(parts.map((i) => ({ name: i, path: i })));
 
     const parents = items.slice(0, -1);
     const current = items[items.length - 1];
 
-    const pathPart = (item: string) => (
+    const pathPart = ({ name, path }: PathPart) => (
         <>
-            <Item>
-                <A href={'/' + item}>{item}</A>
+            <Item key={name + 'i'}>
+                <A key={name + 'a'} to={'/files' + path}>
+                    {name}
+                </A>
             </Item>
-            <Item>/</Item>
+            <Item key={name + '-slash'}>/</Item>
         </>
     );
 
     return (
-        <List {...props}>
+        <List {...props} key="ul">
             {parents.map(pathPart)}
-            <Item>{current}</Item>
+            <Item key="current">{current.name}</Item>
         </List>
     );
 }

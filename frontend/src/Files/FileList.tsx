@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Box, CustomIcon } from '../general/Elements';
 import { Path } from './Path';
 import { FileType } from './FileType';
+import { useNavigate } from 'react-router-dom';
+import { Size } from './Size';
 
 const ListBox = styled(Box)`
     width: 100%;
@@ -35,28 +37,23 @@ const THead = styled.thead`
     }
 `;
 
-const lastUsed = new Date()
-    .toISOString()
-    .replace('T', ' ')
-    .replace(/\..+$/, '');
-const files = [
-    { name: 'images', type: 'folder', size: '4 items', date: lastUsed },
-    { name: 'mountains.jpg', type: 'jpg', size: '7MB', date: lastUsed },
-    { name: 'test.pdf', type: 'PDF', size: '12KB', date: lastUsed },
-    { name: 'some_file.pdf', type: 'PDF', size: '12KB', date: lastUsed },
-    {
-        name: 'stuff with spaces.pdf',
-        type: 'PDF',
-        size: '12KB',
-        date: lastUsed,
-    },
-    { name: 'lol.pdf', type: 'PDF', size: '12KB', date: lastUsed },
-];
+export type FileStats = {
+    name: string;
+    size: number;
+    type: string;
+};
 
-export function FilesList() {
+export function FilesList({
+    files,
+    path,
+}: {
+    path: string[];
+    files: FileStats[];
+}) {
+    const navigate = useNavigate();
     return (
         <ListBox>
-            <Path parts={['documents']} />
+            <Path parts={path} />
 
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <THead>
@@ -71,13 +68,18 @@ export function FilesList() {
                 </THead>
                 <tbody>
                     {files.map(({ name, type, size }) => (
-                        <TR>
+                        <TR
+                            key={name}
+                            onClick={() => navigate('/files/' + name)}
+                        >
                             <TD>
                                 <FileType type={type} />
                             </TD>
                             <TD>{name}</TD>
                             <TD>{type}</TD>
-                            <TD>{size}</TD>
+                            <TD>
+                                <Size size={size} folder={type === 'folder'} />
+                            </TD>
                         </TR>
                     ))}
                 </tbody>

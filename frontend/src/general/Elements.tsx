@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const theme = {
     font: "'M PLUS 2', sans-serif",
@@ -77,7 +78,7 @@ export const Input = styled.input`
     }
 `;
 
-export const A = styled.a`
+export const A = styled(Link)`
     color: ${(props) => props.theme.colors.primary4};
     font-family: ${(props) => props.theme.font};
     font-weight: ${(props) => props.theme.defaultFontWeight};
