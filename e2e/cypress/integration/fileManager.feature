@@ -18,3 +18,9 @@ Feature: File Manager
     Given I open file manager
     When I click notes.txt
     Then I see notes.txt file details
+
+  Scenario: search files
+    Given I open file manager
+    When search for notes
+    Then I see notes.txt in the body
+    And I see 1 files

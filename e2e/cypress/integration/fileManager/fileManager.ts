@@ -33,3 +33,6 @@ Then(/^I see (.+) file details$/, function (file) {
     cy.get('body').should('include.text', file);
     cy.get('body').should('include.text', 'Type:');
 });
+When(/^search for (.+)$/, function (search) {
+    cy.get('#search').type(search);
+});
