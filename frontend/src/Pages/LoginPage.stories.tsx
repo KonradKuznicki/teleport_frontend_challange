@@ -5,12 +5,15 @@ import { Page, theme } from '../general/Elements';
 import { Alert } from '../general/Alert';
 import { LoginForm } from '../Auth/LoginForm';
 
-
 function LoginPage(props: { isError?: boolean }) {
-    return <Page style={{ display: 'table-cell' }}>
-        {props.isError && <Alert type='danger'>Incorrect Username and/or password</Alert>}
-        <LoginForm />
-    </Page>;
+    return (
+        <Page style={{ display: 'table-cell' }}>
+            {props.isError && (
+                <Alert type="danger">Incorrect Username and/or password</Alert>
+            )}
+            <LoginForm submit={() => void 0} />
+        </Page>
+    );
 }
 
 export default {
@@ -18,8 +21,11 @@ export default {
     component: LoginPage,
 } as ComponentMeta<typeof LoginPage>;
 
-const Template: ComponentStory<typeof LoginPage> = (args) => <ThemeProvider
-    theme={theme}><LoginPage {...args} /></ThemeProvider>;
+const Template: ComponentStory<typeof LoginPage> = (args) => (
+    <ThemeProvider theme={theme}>
+        <LoginPage {...args} />
+    </ThemeProvider>
+);
 
 export const Default = Template.bind({});
 

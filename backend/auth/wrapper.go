@@ -1,22 +1,51 @@
 package auth
 
 import (
+	"errors"
 	"log"
 	"net/http"
+	"path"
+	"strings"
 )
+
+func GoToLogin(writer http.ResponseWriter, request *http.Request) {
+	http.SetCookie(writer, &http.Cookie{
+		Name:     "returnTo",
+		Value:    ComputeReturn(request.URL.Path),
+		MaxAge:   300,
+		Path:     "/",
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+	})
+	http.Redirect(writer, request, "/login", http.StatusFound)
+}
+
+func ComputeReturn(requestPath string) string {
+	cleanPath := path.Clean(requestPath)
+	if strings.Index(cleanPath, "/files") == 0 {
+		return cleanPath
+	}
+	return "/files"
+}
 
 func (a *Auth) Wrapper(handlerFunc http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		cookie, err := request.Cookie("auth")
-		if err != nil {
-			log.Printf("wierd! error reading cookie! %v", err)
+		if err != nil && !errors.Is(err, http.ErrNoCookie) {
+			log.Printf("error reading cookie: %v", err)
 		}
 
 		if cookie != nil {
+			if !IsCookieSecure(cookie) {
+				log.Println("error insecure cookie ", http.SameSiteStrictMode, cookie.SameSite, cookie.Secure, cookie.HttpOnly)
+				GoToLogin(writer, request)
+				return
+			}
 			valid, err := a.IsTokenValid(cookie.Value)
 			if err != nil {
 				log.Println("error validating token ", err.Error())
-				http.Redirect(writer, request, "/login", http.StatusFound)
+				GoToLogin(writer, request)
 				return
 			}
 			if valid {
@@ -25,19 +54,23 @@ func (a *Auth) Wrapper(handlerFunc http.HandlerFunc) http.HandlerFunc {
 				return
 			}
 			log.Println("invalid token ")
-			http.Redirect(writer, request, "/login", http.StatusFound)
+			GoToLogin(writer, request)
 			return
 		} else {
 			log.Println("redirecting")
-			http.Redirect(writer, request, "/login", http.StatusFound)
+			GoToLogin(writer, request)
 		}
 	}
+}
+
+func IsCookieSecure(cookie *http.Cookie) bool {
+	return cookie.Secure && cookie.HttpOnly && cookie.SameSite == http.SameSiteStrictMode
 }
 
 func (a *Auth) WrapperAPI(handlerFunc http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		cookie, err := request.Cookie("auth")
-		if err != nil {
+		if err != nil && !errors.Is(err, http.ErrNoCookie) {
 			log.Printf("wierd! error reading cookie! %v", err)
 		}
 

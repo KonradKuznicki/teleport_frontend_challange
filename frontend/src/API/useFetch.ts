@@ -16,6 +16,9 @@ export function useFetch<T>(url: string): {
 
             try {
                 const result = await fetch(url);
+                if (result.status === 403) {
+                    window.location.pathname = '/login';
+                }
 
                 setData(await result.json());
             } catch (error) {

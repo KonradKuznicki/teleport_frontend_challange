@@ -15,7 +15,7 @@ Feature: Authentication
     And I open login form
     When I submit valid login form
     Then I am authenticated
-    And I am redirected to file manager
+#    And I am redirected to file manager
 
   Scenario: log out
     Given I am authenticated user
@@ -31,4 +31,10 @@ Feature: Authentication
     And I am redirected to login form
     When I submit valid login form
     Then I am authenticated
-    And I am redirected to file manager
+#    And I am redirected to file manager
+
+  Scenario: session expired
+    Given I am authenticated user
+    When I wait 65 seconds
+    Then I am unauthenticated
+#    And I am redirected to file manager

@@ -10,7 +10,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start-login": "node scripts/start.js",
     "build": "react-scripts build",
+    "build-login": "node scripts/build.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
@@ -42,6 +44,11 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "react-app"
     ]
   },
   "devDependencies": {

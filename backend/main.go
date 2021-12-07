@@ -24,7 +24,7 @@ func main() {
 func SetupRouter() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	notVerySecurePass := fmt.Sprintf("%x", strings.Repeat("A", 32))
+	notVerySecurePass := fmt.Sprintf("%x", strings.Repeat("A", 32)) // TODO: should be some random 32byte
 
 	authenticator := auth.NewAuth(
 		userRepositories.NewInMemoryUserRepository(),
@@ -43,13 +43,13 @@ func SetupRouter() *http.ServeMux {
 
 	server.Handle(mux, "/API/v1/user/logout", enableCors(authenticator.LogoutHandler))
 	server.Handle(mux, "/API/v1/user/login", enableCors(authenticator.LoginHandler))
-	server.Handle(mux, "/login", auth.StaticsHandler)
-	server.Handle(mux, "/files", authenticator.Wrapper(files.SataticsHandler))
-	server.Handle(mux, "/", IndexHandler(authenticator.WrapperAPI))
+	server.Handle(mux, "/login/", auth.StaticsHandler)
+	server.Handle(mux, "/files/", authenticator.Wrapper(files.SataticsHandler))
+	server.Handle(mux, "/", IndexHandler(authenticator))
 	return mux
 }
 
-func IndexHandler(authWrapper func(handlerFunc http.HandlerFunc) http.HandlerFunc) http.HandlerFunc {
+func IndexHandler(authenticator *auth.Auth) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
 			http.Redirect(w, r, "/files", http.StatusPermanentRedirect)
@@ -60,7 +60,10 @@ func IndexHandler(authWrapper func(handlerFunc http.HandlerFunc) http.HandlerFun
 				log.Printf("cannot open file manager: %v", err)
 				http.Error(w, "server error", http.StatusInternalServerError)
 			}
-			enableCors(authWrapper(fm.FilesHandler))(w, r)
+			enableCors(authenticator.WrapperAPI(fm.FilesHandler))(w, r)
+
+			//} else if strings.Index(r.URL.Path, "/files") == 0 {
+			//	authenticator.Wrapper(files.SataticsHandler)(w, r)
 		} else {
 			http.NotFound(w, r)
 		}
@@ -70,6 +73,8 @@ func IndexHandler(authWrapper func(handlerFunc http.HandlerFunc) http.HandlerFun
 func enableCors(handlerFunc http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("Access-Control-Allow-Origin", "*")
-		handlerFunc(writer, request)
+		if request.Method != "OPTIONS" {
+			handlerFunc(writer, request)
+		}
 	}
 }

@@ -21,7 +21,7 @@ func HSTS(handler func(http.ResponseWriter, *http.Request)) func(http.ResponseWr
 func LogRequests(handler func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		cookie := GetCookieState(request)
-		log.Printf("path: %s, cookie: %s", request.URL, cookie)
+		log.Printf("method: %s path: %s, cookie: %s", request.Method, request.URL, cookie)
 		handler(writer, request)
 	}
 }

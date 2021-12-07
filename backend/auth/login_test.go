@@ -20,7 +20,7 @@ func (s *TestAuthSuite) TestLogin_handleCorrectCreds() {
 	http.HandlerFunc(s.Auth.LoginHandler).ServeHTTP(s.recorder, req)
 
 	s.Equal(http.StatusFound, s.recorder.Code)
-	cookie := s.recorder.Result().Cookies()[0]
+	cookie := s.recorder.Result().Cookies()[1]
 	s.Equal(cookie, &http.Cookie{
 		Name:     "auth",
 		Value:    cookie.Value,

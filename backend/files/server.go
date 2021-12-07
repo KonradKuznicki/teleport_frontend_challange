@@ -1,15 +1,23 @@
 package files
 
 import (
-	"io"
+	"fmt"
 	"log"
 	"net/http"
 )
 
 func SataticsHandler(writer http.ResponseWriter, request *http.Request) {
-	writer.Header().Add("content-type", "text/html")
-	_, err := io.WriteString(writer, "<html><head></head><body><h1>files manager</h1></body></html>")
-	if err != nil {
-		log.Printf("error writeing response for %s error: %v", request.URL.Host, err)
+	fs := http.FileServer(http.Dir("../frontend/build"))
+	http.StripPrefix("/files", fs).ServeHTTP(writer, request)
+	get := writer.Header().Get("Status")
+	if get == fmt.Sprint(http.StatusNotFound) {
+		log.Println("ojojoj")
 	}
+	// log.Println(writer.Header())
 }
+
+//writer.Header().Add("content-type", "text/html")
+//_, err := io.WriteString(writer, "<html><head></head><body><h1>files manager</h1></body></html>")
+//if err != nil {
+//log.Printf("error writeing response for %s error: %v", request.URL.Host, err)
+//}

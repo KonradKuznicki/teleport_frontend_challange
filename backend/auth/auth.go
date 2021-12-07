@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -37,23 +38,30 @@ type Auth struct {
 	cookieMaxAgeSeconds int
 }
 
+type GoTo struct {
+	GoTo string `json:"goTo"`
+}
+
 func (a *Auth) LoginHandler(writer http.ResponseWriter, request *http.Request) {
 	creds, err := getCreds(request.Body)
 	if err != nil {
 		log.Println("error parsing credentials ", err.Error())
-		http.Error(writer, "could not parse credentials", http.StatusBadRequest)
+		http.Error(writer, `{"error": "could not parse credentials"}`, http.StatusBadRequest)
 		return
 	}
 	token, err := a.Login(creds.Login, creds.Pass)
 	if err != nil {
 		log.Println("error logging in user ", err.Error(), creds)
-		http.Error(writer, "could not authenticate", http.StatusInternalServerError)
+		http.Error(writer, `{"error": "could not authenticate"}`, http.StatusInternalServerError)
 		return
 	}
 	if token == "" {
-		http.Error(writer, "incorrect user and or password", http.StatusForbidden)
+		log.Printf("user and or password incorrect login: %s, pass: %s", creds.Login, creds.Pass)
+		http.Error(writer, `{"error": "incorrect user and or password"}`, http.StatusForbidden)
 		return
 	}
+
+	url := RedirectFromCookie(writer, request, err)
 
 	http.SetCookie(writer, &http.Cookie{
 		Name:     "auth",
@@ -64,7 +72,26 @@ func (a *Auth) LoginHandler(writer http.ResponseWriter, request *http.Request) {
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
 	})
-	http.Redirect(writer, request, "/files", http.StatusFound)
+	marshal, err := json.Marshal(&GoTo{url})
+	if err != nil {
+		log.Println("error creating redirect")
+		marshal = []byte(`{"goTo": "/files"}`)
+	}
+	http.Error(writer, string(marshal), http.StatusOK)
+}
+
+func RedirectFromCookie(writer http.ResponseWriter, request *http.Request, err error) string {
+	cookieName := "redirectTo"
+	cookie, err := request.Cookie(cookieName)
+	if err != nil && !errors.Is(err, http.ErrNoCookie) {
+		log.Printf("error reading cookie: %v", err)
+	}
+	url := "/files"
+	if cookie != nil && IsCookieSecure(cookie) {
+		url = ComputeReturn(cookie.Value)
+	}
+	UnsetCookie(writer, cookieName)
+	return url
 }
 
 type Creds struct {
@@ -81,8 +108,13 @@ func getCreds(body io.ReadCloser) (*Creds, error) {
 }
 
 func (a *Auth) LogoutHandler(writer http.ResponseWriter, request *http.Request) {
+	UnsetCookie(writer, "auth")
+	http.Redirect(writer, request, "/login", http.StatusFound)
+}
+
+func UnsetCookie(writer http.ResponseWriter, name string) {
 	http.SetCookie(writer, &http.Cookie{
-		Name:     "auth",
+		Name:     name,
 		Value:    "",
 		Expires:  time.Unix(0, 0),
 		Path:     "/",
@@ -90,7 +122,6 @@ func (a *Auth) LogoutHandler(writer http.ResponseWriter, request *http.Request) 
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
 	})
-	http.Redirect(writer, request, "/login", http.StatusFound)
 }
 
 func NewUserQuery(id string) *UserQuery {
@@ -152,6 +183,9 @@ func (a *Auth) Login(login string, pass string) (string, error) {
 	user, err := a.GetUser(login, pass)
 	if err != nil {
 		return "", err
+	}
+	if user == nil {
+		return "", nil
 	}
 	return a.CreateSession(user)
 }

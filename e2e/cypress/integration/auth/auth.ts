@@ -32,15 +32,24 @@ Then(/^I see (.*) in the body$/, (txt) => {
 
 ///
 When(/^I submit valid login form$/, function () {
-    cy.contains('log me in').click();
+    cy.request('POST', url + '/API/v1/user/login', {
+        login: 'user1',
+        pass: 'pass1',
+    });
 });
 Then(/^I am authenticated$/, function () {
+    cy.visit(url + '/files');
+
     // @ts-ignore
     cy.get('body').not('include.text', 'files');
 });
 
 function LogMeIn() {
-    cy.contains('log me in').click();
+    cy.request('POST', url + '/API/v1/user/login', {
+        login: 'user1',
+        pass: 'pass1',
+    });
+    cy.visit(url);
 }
 
 ///
@@ -49,9 +58,12 @@ Given(/^I am authenticated user$/, function () {
     LogMeIn();
 });
 When(/^I log out$/, function () {
-    cy.visit(url + '/user/logout');
+    cy.visit(url + '/API/v1/user/logout');
 });
 Then(/^I am unauthenticated$/, function () {
     cy.visit(url + '/files');
     cy.location('pathname').should('equal', '/login');
+});
+When(/^I wait (\d+) seconds$/, function (wait) {
+    cy.wait(wait * 1000);
 });
