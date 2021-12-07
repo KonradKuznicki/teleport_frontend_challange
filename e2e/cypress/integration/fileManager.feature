@@ -13,3 +13,8 @@ Feature: File Manager
     When I click images
     Then I see than I am in images folder
     And I see 2 files
+
+  Scenario: open non nested files
+    Given I open file manager
+    When I click notes.txt
+    Then I see notes.txt file details

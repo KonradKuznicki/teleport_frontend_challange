@@ -14,7 +14,6 @@ export function ListFilesPage({
     path: string[];
     files: FileStats[];
 }) {
-    console.log(files, path);
     return (
         <Page>
             <PageHead />
@@ -42,6 +41,22 @@ export function ListFilesRouteablePage() {
     return <ListFilesLoadablePage path={path.substring(7)} />;
 }
 
+function maybeFileDetails(
+    data: FileStats[] | undefined,
+    path: string,
+): FileStats | false {
+    if (
+        data &&
+        data.length == 1 &&
+        decodeURI(path).lastIndexOf(data[0].name) ==
+            decodeURI(path).length - data[0].name.length &&
+        data[0].type !== 'folder'
+    ) {
+        return data[0];
+    }
+    return false;
+}
+
 export function ListFilesLoadablePage({ path }: { path: string }) {
     const { data, isLoading, isError } = useFetch<FileStats[]>(
         'https://localhost:3001/API/v1/files/' + path,
@@ -61,14 +76,10 @@ export function ListFilesLoadablePage({ path }: { path: string }) {
         );
     }
 
-    // @ts-ignore
-    if (
-        data &&
-        data.length == 1 &&
-        path.lastIndexOf(data[0].name) == path.length - data[0].name.length
-    ) {
+    const details = maybeFileDetails(data, path);
+    if (details) {
         return (
-            <FileDetailsPage details={data[0]} pathParts={path.split('/')} />
+            <FileDetailsPage details={details} pathParts={path.split('/')} />
         );
     }
 

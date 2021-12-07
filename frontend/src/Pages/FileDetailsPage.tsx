@@ -14,7 +14,7 @@ export function FileDetailsPage({
 }) {
     return (
         <Page style={{ display: 'table-cell' }} {...props}>
-            <FileDetailsPageHead />
+            <FileDetailsPageHead pathParts={pathParts} />
             <FileDetails pathParts={pathParts} details={details} />
         </Page>
     );

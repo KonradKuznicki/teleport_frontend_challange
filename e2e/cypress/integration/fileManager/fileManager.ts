@@ -29,3 +29,7 @@ Then(/^I see than I am in (.+) folder$/, (folder) => {
     cy.location('pathname').should('equal', '/files/' + folder);
     cy.get('ul').contains(folder);
 });
+Then(/^I see (.+) file details$/, function (file) {
+    cy.get('body').should('include.text', file);
+    cy.get('body').should('include.text', 'Type:');
+});
