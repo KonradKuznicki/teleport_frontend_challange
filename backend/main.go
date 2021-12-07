@@ -43,11 +43,11 @@ func SetupRouter() *http.ServeMux {
 
 	fm, err := files.NewFileManager("../resources/traversable")
 	if err != nil {
-		log.Fatal("cannot open file manager: %v", err)
+		log.Fatalf("cannot open file manager: %v", err)
 	}
 	server.Handle(mux, "/API/v1/user/logout", enableCors(authenticator.LogoutHandler))
 	server.Handle(mux, "/API/v1/user/login", enableCors(authenticator.LoginHandler))
-	server.Handle(mux, "/API/v1/files/", authenticator.Wrapper(enableCors(fm.FilesHandler)))
+	server.Handle(mux, "/API/v1/files/", authenticator.WrapperAPI(enableCors(fm.FilesHandler)))
 	server.Handle(mux, "/login/", auth.StaticsHandler)
 	server.Handle(mux, "/files/", authenticator.Wrapper(files.SataticsHandler))
 	server.Handle(mux, "/", IndexHandler(authenticator))

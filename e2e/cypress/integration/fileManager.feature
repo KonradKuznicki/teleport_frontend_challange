@@ -8,7 +8,7 @@ Feature: File Manager
     When I open file manager
     Then I see 4 files
 
-  Scenario: go to foler
+  Scenario: go to folder
     Given I open file manager
     When I click images
     Then I see than I am in images folder

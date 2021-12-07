@@ -5,6 +5,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useFetch } from '../API/useFetch';
 import { Alert } from '../general/Alert';
+import { FileDetailsPage } from './FileDetailsPage';
 
 export function ListFilesPage({
     files,
@@ -57,6 +58,17 @@ export function ListFilesLoadablePage({ path }: { path: string }) {
             <Page>
                 <Alert type="info">Please wait loading...</Alert>
             </Page>
+        );
+    }
+
+    // @ts-ignore
+    if (
+        data &&
+        data.length == 1 &&
+        path.lastIndexOf(data[0].name) == path.length - data[0].name.length
+    ) {
+        return (
+            <FileDetailsPage details={data[0]} pathParts={path.split('/')} />
         );
     }
 
