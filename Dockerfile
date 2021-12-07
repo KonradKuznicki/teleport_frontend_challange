@@ -8,7 +8,7 @@ RUN PUBLIC_URL="/files" yarn build
 RUN PUBLIC_URL="/login" yarn build-login
 
 
-FROM golang AS backend
+FROM golang:1.17 AS backend
 
 WORKDIR /backend
 COPY backend .
