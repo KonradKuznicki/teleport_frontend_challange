@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Box, CustomIcon } from '../general/Elements';
+import styled, { css } from 'styled-components';
+import { Box } from '../general/Elements';
 import { Path } from './Path';
 import { FileType } from './FileType';
 import { useNavigate } from 'react-router-dom';
@@ -43,12 +43,40 @@ export type FileStats = {
     type: string;
 };
 
+const StyledSortable = styled.div`
+    ${(args: { sorts: boolean }) =>
+        args.sorts &&
+        css`
+            font-weight: 800;
+        `}
+`;
+
+function Sortable(props: {
+    sortBy: string;
+    column: string;
+    onSort: (sortBy: string) => void;
+    children: React.ReactNode;
+}) {
+    return (
+        <StyledSortable
+            sorts={props.column == props.sortBy}
+            onClick={() => props.onSort(props.column)}
+        >
+            {props.children}
+        </StyledSortable>
+    );
+}
+
 export function FilesList({
     files,
     path,
+    onSort,
+    sortBy,
 }: {
     path: string[];
     files: FileStats[];
+    onSort: (sortBy: string) => void;
+    sortBy: string;
 }) {
     const navigate = useNavigate();
     return (
@@ -59,10 +87,32 @@ export function FilesList({
                 <THead>
                     <tr>
                         <TH style={{ width: '40px' }} />
-                        <TH>Name</TH>
-                        <TH>Type</TH>
                         <TH>
-                            Size <CustomIcon code="arrow_drop_down" />
+                            <Sortable
+                                column="name"
+                                sortBy={sortBy}
+                                onSort={onSort}
+                            >
+                                Name
+                            </Sortable>
+                        </TH>
+                        <TH>
+                            <Sortable
+                                column="type"
+                                sortBy={sortBy}
+                                onSort={onSort}
+                            >
+                                Type
+                            </Sortable>
+                        </TH>
+                        <TH>
+                            <Sortable
+                                column="size"
+                                sortBy={sortBy}
+                                onSort={onSort}
+                            >
+                                Size
+                            </Sortable>
                         </TH>
                     </tr>
                 </THead>

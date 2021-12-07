@@ -3,6 +3,13 @@ import { PageHead } from '../Files/PageHead';
 import { FilesList, FileStats } from '../Files/FileList';
 import React, { useState } from 'react';
 
+function compare(a: any, b: any) {
+    if (typeof a === 'string') {
+        return a.localeCompare(b);
+    }
+    return a - b;
+}
+
 export function ListFilesPage({
     files,
     path,
@@ -11,14 +18,21 @@ export function ListFilesPage({
     files: FileStats[];
 }) {
     const [search, onSearch] = useState('');
+    const [sortBy, setSortBy] = useState('');
 
-    console.log(search);
+    const filteredFiles = files.filter((i) => i.name.includes(search));
+    if (sortBy) {
+        filteredFiles.sort((a: any, b: any) => compare(a[sortBy], b[sortBy]));
+    }
+
     return (
         <Page>
             <PageHead onSearch={onSearch} />
             <FilesList
                 path={path}
-                files={files.filter((i) => i.name.includes(search))}
+                files={filteredFiles}
+                sortBy={sortBy}
+                onSort={setSortBy}
             />
         </Page>
     );
