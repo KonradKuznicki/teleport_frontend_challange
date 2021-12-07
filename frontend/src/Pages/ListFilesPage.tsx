@@ -2,6 +2,7 @@ import { Page } from '../general/Elements';
 import { PageHead } from '../Files/PageHead';
 import { FilesList, FileStats } from '../Files/FileList';
 import React, { useState } from 'react';
+import { format } from '../Files/Size';
 
 function compare(a: any, b: any) {
     if (typeof a === 'string') {
@@ -20,7 +21,15 @@ export function ListFilesPage({
     const [search, onSearch] = useState('');
     const [sortBy, setSortBy] = useState('');
 
-    const filteredFiles = files.filter((i) => i.name.includes(search));
+    const ls = search.toLowerCase();
+    const filteredFiles = files.filter(
+        (i) =>
+            i.name.toLowerCase().includes(ls) ||
+            i.type.toLowerCase().includes(ls) ||
+            (i.type === 'folder' ? '--' : format(i.size))
+                .toLowerCase()
+                .includes(ls),
+    );
     if (sortBy) {
         filteredFiles.sort((a: any, b: any) => compare(a[sortBy], b[sortBy]));
     }
