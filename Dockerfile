@@ -12,20 +12,23 @@ FROM golang AS backend
 
 WORKDIR /backend
 COPY backend .
-RUN go build -o /backend/app
+RUN CGO_ENABLED=0 go build -o /backend/app
+RUN mkdir /user && \
+    echo 'nobody:x:65534:65534:nobody:/:' > /user/passwd && \
+    echo 'nobody:x:65534:' > /user/group
 
 
+FROM scratch
 
-FROM ubuntu
-
-RUN groupadd -r chellenger && useradd -r -g chellenger chellenger
 WORKDIR /challenge/backend
+COPY --from=backend /user/group /user/passwd /etc/
 COPY resources /challenge/resources
+COPY --chown=nobody:nobody resources/traversable /challenge/resources/traversable
 COPY --from=frontend /frontend/build /challenge/frontend/build
 COPY --from=frontend /frontend/login-build /challenge/frontend/login-build
 COPY --from=backend /backend/app ./
-RUN chown -R chellenger:chellenger /challenge/resources/traversable
-USER chellenger
+
+USER nobody:nobody
 ENTRYPOINT ["./app"]
 
 
