@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Path empty path should match snapshot 1`] = `
+<ul
+  class="sc-jrQzAO jVOqxz"
+>
+  <li
+    class="sc-kDTinF fyeoYR"
+  >
+    My Files
+  </li>
+</ul>
+`;
+
+exports[`Path non empty path should match snapshot 1`] = `
+<ul
+  class="sc-jrQzAO jVOqxz"
+>
+  <li
+    class="sc-kDTinF fyeoYR"
+  >
+    <a
+      class="sc-eCImPb cpDrvT"
+      href="/My Files"
+    >
+      My Files
+    </a>
+  </li>
+  <li
+    class="sc-kDTinF fyeoYR"
+  >
+    /
+  </li>
+  <li
+    class="sc-kDTinF fyeoYR"
+  >
+    <a
+      class="sc-eCImPb cpDrvT"
+      href="/documents"
+    >
+      documents
+    </a>
+  </li>
+  <li
+    class="sc-kDTinF fyeoYR"
+  >
+    /
+  </li>
+  <li
+    class="sc-kDTinF fyeoYR"
+  >
+    images
+  </li>
+</ul>
+`;
