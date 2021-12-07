@@ -10,11 +10,11 @@ Given(/^I am unauthenticated user$/, function () {
 });
 
 Then(/^I am redirected to login form$/, function () {
-    cy.location('pathname').should('equal', '/login');
+    cy.location('pathname').should('include', '/login');
 });
 
 Then(/^I am redirected to file manager$/, function () {
-    cy.location('pathname').should('equal', '/files');
+    cy.location('pathname').should('include', '/files');
 });
 
 Given(/^I open file manager$/, function () {
@@ -32,13 +32,12 @@ Then(/^I see (.*) in the body$/, (txt) => {
 
 ///
 When(/^I submit valid login form$/, function () {
-    cy.request('POST', url + '/API/v1/user/login', {
-        login: 'user1',
-        pass: 'pass1',
-    });
+    cy.get('#login').type('user1');
+    cy.get('#pass').type('pass1');
+    cy.contains('Log In').click();
 });
 Then(/^I am authenticated$/, function () {
-    cy.visit(url + '/files');
+    cy.location('pathname').should('include', '/files');
 
     // @ts-ignore
     cy.get('body').not('include.text', 'files');
@@ -62,7 +61,7 @@ When(/^I log out$/, function () {
 });
 Then(/^I am unauthenticated$/, function () {
     cy.visit(url + '/files');
-    cy.location('pathname').should('equal', '/login');
+    cy.location('pathname').should('include', '/login');
 });
 When(/^I wait (\d+) seconds$/, function (wait) {
     cy.wait(wait * 1000);

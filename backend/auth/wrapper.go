@@ -37,11 +37,6 @@ func (a *Auth) Wrapper(handlerFunc http.HandlerFunc) http.HandlerFunc {
 		}
 
 		if cookie != nil {
-			if !IsCookieSecure(cookie) {
-				log.Println("error insecure cookie ", http.SameSiteStrictMode, cookie.SameSite, cookie.Secure, cookie.HttpOnly)
-				GoToLogin(writer, request)
-				return
-			}
 			valid, err := a.IsTokenValid(cookie.Value)
 			if err != nil {
 				log.Println("error validating token ", err.Error())
@@ -61,10 +56,6 @@ func (a *Auth) Wrapper(handlerFunc http.HandlerFunc) http.HandlerFunc {
 			GoToLogin(writer, request)
 		}
 	}
-}
-
-func IsCookieSecure(cookie *http.Cookie) bool {
-	return cookie.Secure && cookie.HttpOnly && cookie.SameSite == http.SameSiteStrictMode
 }
 
 func (a *Auth) WrapperAPI(handlerFunc http.HandlerFunc) http.HandlerFunc {

@@ -1,1 +1,4 @@
-node_modules!/login-build/
+node_modules/
+login-build/
+build/
+coverage/

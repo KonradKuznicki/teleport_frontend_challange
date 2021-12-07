@@ -1,19 +1,12 @@
 package files
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 )
 
 func SataticsHandler(writer http.ResponseWriter, request *http.Request) {
 	fs := http.FileServer(http.Dir("../frontend/build"))
 	http.StripPrefix("/files", fs).ServeHTTP(writer, request)
-	get := writer.Header().Get("Status")
-	if get == fmt.Sprint(http.StatusNotFound) {
-		log.Println("ojojoj")
-	}
-	// log.Println(writer.Header())
 }
 
 //writer.Header().Add("content-type", "text/html")

@@ -87,7 +87,7 @@ func RedirectFromCookie(writer http.ResponseWriter, request *http.Request, err e
 		log.Printf("error reading cookie: %v", err)
 	}
 	url := "/files"
-	if cookie != nil && IsCookieSecure(cookie) {
+	if cookie != nil {
 		url = ComputeReturn(cookie.Value)
 	}
 	UnsetCookie(writer, cookieName)
@@ -120,7 +120,7 @@ func UnsetCookie(writer http.ResponseWriter, name string) {
 		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
-		SameSite: http.SameSiteStrictMode,
+		SameSite: http.SameSiteLaxMode,
 	})
 }
 

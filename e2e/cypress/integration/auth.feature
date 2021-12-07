@@ -8,7 +8,7 @@ Feature: Authentication
   Scenario: log in form
     Given I am unauthenticated user
     And I open login form
-    Then I see login form in the body
+    Then I see Log In in the body
 
   Scenario: log in process
     Given I am unauthenticated user

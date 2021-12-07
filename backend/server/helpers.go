@@ -3,7 +3,6 @@ package server
 import (
 	"log"
 	"net/http"
-	"time"
 )
 
 func Handle(mux *http.ServeMux, path string, handler http.HandlerFunc) {
@@ -43,7 +42,7 @@ func GetCookieState(request *http.Request) string {
 
 func SlowDown(handler func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWriter, *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		time.Sleep(time.Millisecond * 100)
+		// time.Sleep(time.Millisecond * 100)
 		handler(writer, request)
 	}
 }

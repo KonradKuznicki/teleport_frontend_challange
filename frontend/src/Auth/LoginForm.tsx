@@ -21,6 +21,7 @@ export function LoginForm({
                     <Cell>Login:</Cell>
                     <Cell>
                         <Input
+                            id="login"
                             value={login}
                             onChange={(e) => setLogin(e.target.value)}
                         />
@@ -33,6 +34,7 @@ export function LoginForm({
                     <Cell>Password:</Cell>
                     <Cell>
                         <Input
+                            id="pass"
                             type="password"
                             value={pass}
                             onChange={(e) => setPass(e.target.value)}
