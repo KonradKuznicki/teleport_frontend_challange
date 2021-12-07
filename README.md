@@ -3,6 +3,7 @@
 ## Run project
 ```
 $ docker build . -t challenge 
+$ docker run -it -p 3001:3001 challenge 
 ```
 
 ## Session 
