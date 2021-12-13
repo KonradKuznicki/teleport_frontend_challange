@@ -1,15 +1,16 @@
 package auth_test
 
 import (
-	"challenge/auth"
 	"fmt"
 	"strings"
 	"testing"
 
+	"challenge/auth"
 	"github.com/stretchr/testify/suite"
 )
 
 func TestAESEncryptor(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(TestAESEncryptorSuite))
 }
 
@@ -23,7 +24,6 @@ func (s *TestAESEncryptorSuite) SetupSuite() {
 }
 
 func (s *TestAESEncryptorSuite) TearDownSuite() {
-
 }
 
 func (s *TestAESEncryptorSuite) TestAESEncryptor() {

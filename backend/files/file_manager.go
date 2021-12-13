@@ -49,7 +49,6 @@ func (f *fmerr) Code() int {
 }
 
 func (m *FileManager) ListFolder(subPath string) ([]*File, FileManagerError) {
-
 	path, err := m.computePath(subPath)
 	if err != nil {
 		return nil, err
@@ -124,7 +123,6 @@ func (m *FileManager) computePath(subPath string) (string, FileManagerError) {
 }
 
 func (m *FileManager) FilesHandler(writer http.ResponseWriter, request *http.Request) {
-
 	apiPrefix := "/API/v1/files"
 	if request.URL.Path[:len(apiPrefix)] != apiPrefix {
 		log.Println("bad request", request.URL.Path)
@@ -182,7 +180,6 @@ func itemType(file fs.FileInfo) (string, int64) {
 }
 
 func NewFileManager(rootPath string) (*FileManager, error) {
-
 	abs, err := filepath.Abs(rootPath)
 	if err != nil {
 		return nil, err

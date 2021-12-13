@@ -62,7 +62,7 @@ func (a *Auth) WrapperAPI(handlerFunc http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		cookie, err := request.Cookie("auth")
 		if err != nil && !errors.Is(err, http.ErrNoCookie) {
-			log.Printf("wierd! error reading cookie! %v", err)
+			log.Printf("weird! error reading cookie! %v", err)
 		}
 
 		if cookie != nil {

@@ -22,8 +22,8 @@ const DefaultRoot: PathPart[] = [{ name: 'My Files', path: '/' }];
 export function Path({ parts, ...props }: { parts: string[] }) {
     const items = DefaultRoot.concat(
         parts.map((i, c, a) => ({
-            name: i,
-            path: (c ? a[c - 1] : '') + '/' + i,
+            name: decodeURI(i),
+            path: '/' + a.slice(0, c + 1).join('/'),
         })),
     );
 

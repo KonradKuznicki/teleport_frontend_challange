@@ -5,9 +5,11 @@ import { Page, theme } from '../general/Elements';
 import { PageHead } from './PageHead';
 
 function TestPage() {
-    return <Page>
-        <PageHead />
-    </Page>;
+    return (
+        <Page>
+            <PageHead onSearch={() => void 0} />
+        </Page>
+    );
 }
 
 export default {
@@ -15,7 +17,11 @@ export default {
     component: TestPage,
 } as ComponentMeta<typeof TestPage>;
 
-const Template: ComponentStory<typeof TestPage> = () => <ThemeProvider theme={theme}><TestPage /></ThemeProvider>;
+const Template: ComponentStory<typeof TestPage> = () => (
+    <ThemeProvider theme={theme}>
+        <TestPage />
+    </ThemeProvider>
+);
 
 export const Default = Template.bind({});
 

@@ -28,7 +28,12 @@ const files: FileStats[] = [
 
 const Template: ComponentStory<typeof FilesList> = (args) => (
     <ThemeProvider theme={theme}>
-        <FilesList path={args.path} files={args.files} />
+        <FilesList
+            path={args.path}
+            files={args.files}
+            sortBy={args.sortBy}
+            onSort={() => void 0}
+        />
     </ThemeProvider>
 );
 
@@ -37,6 +42,7 @@ export const Default = Template.bind({});
 Default.args = {
     path: [],
     files: [],
+    sortBy: '',
 };
 
 export const One = Template.bind({});
@@ -44,4 +50,5 @@ export const One = Template.bind({});
 One.args = {
     path: ['documents'],
     files,
+    sortBy: 'name',
 };

@@ -1,19 +1,19 @@
 package main
 
 import (
-	"challenge/auth"
-	"challenge/auth/userRepositories"
-	"challenge/files"
-	"challenge/server"
 	"fmt"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"challenge/auth"
+	"challenge/auth/userRepositories"
+	"challenge/files"
+	"challenge/server"
 )
 
 func main() {
-
 	log.Println("starting")
 
 	mux := SetupRouter()
@@ -43,25 +43,23 @@ func SetupRouter() *http.ServeMux {
 
 	fm, err := files.NewFileManager("../resources/traversable")
 	if err != nil {
-		log.Fatal("cannot open file manager: %v", err)
+		log.Fatalf("cannot open file manager: %v", err)
 	}
 	server.Handle(mux, "/API/v1/user/logout", enableCors(authenticator.LogoutHandler))
 	server.Handle(mux, "/API/v1/user/login", enableCors(authenticator.LoginHandler))
-	server.Handle(mux, "/API/v1/files/", authenticator.Wrapper(enableCors(fm.FilesHandler)))
+	server.Handle(mux, "/API/v1/files/", authenticator.WrapperAPI(enableCors(fm.FilesHandler)))
 	server.Handle(mux, "/login/", auth.StaticsHandler)
 	server.Handle(mux, "/files/", authenticator.Wrapper(files.SataticsHandler))
-	server.Handle(mux, "/", IndexHandler(authenticator))
+	server.Handle(mux, "/", IndexHandler)
 	return mux
 }
 
-func IndexHandler(authenticator *auth.Auth) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/" {
-			http.Redirect(w, r, "/files", http.StatusPermanentRedirect)
-		} else {
-			log.Println("magic magic")
-			http.NotFound(w, r)
-		}
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/" {
+		http.Redirect(w, r, "/files", http.StatusPermanentRedirect)
+	} else {
+		log.Println("magic magic")
+		http.NotFound(w, r)
 	}
 }
 

@@ -1,15 +1,16 @@
 package files_test
 
 import (
-	"challenge/files"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"challenge/files"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFilesStaticHandler(t *testing.T) {
+	t.Parallel()
 
 	req, err := http.NewRequest("GET", "/files", nil)
 	if err != nil {
@@ -24,5 +25,4 @@ func TestFilesStaticHandler(t *testing.T) {
 	assert.Equal(t, rr.Code, http.StatusOK)
 
 	assert.Contains(t, rr.Body.String(), "files manager")
-
 }

@@ -1,27 +1,49 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Box, Cell, Row } from '../general/Elements';
 import { Path } from './Path';
+import { Size } from './Size';
+import { FileStats } from './FileList';
 
 const FileBox = styled(Box)`
-  width: 100%;
-  max-width: ${({theme}) => theme.contentMasWidth};
-  margin: auto;
+    width: 100%;
+    max-width: ${({ theme }) => theme.contentMasWidth};
+    margin: auto;
 `;
 
-function Property({ name, value }: { name: string, value: any }) {
-    return <Row>
-        <Cell style={{ fontWeight: 500, textTransform: 'capitalize' }}>{name}:</Cell>
-        <Cell>{value}</Cell>
-    </Row>;
+function Property({
+    name,
+    children,
+    ...props
+}: {
+    name: string;
+    children?: ReactNode;
+}) {
+    return (
+        <Row {...props}>
+            <Cell style={{ fontWeight: 500, textTransform: 'capitalize' }}>
+                {name}:
+            </Cell>
+            <Cell>{children}</Cell>
+        </Row>
+    );
 }
 
-const lastUsed = (new Date()).toISOString().replace('T', ' ').replace(/\..+$/, '');
-const props = {
-    name: 'test.pdf', type: 'PDF', size: '12KB', date: lastUsed,
-};
-
-export const FileDetails = () => <FileBox>
-    <Path parts={['Documents', 'image.txt']} />
-    {Object.entries(props).map(([k, v]) => <Property name={k} value={v} />)}
-</FileBox>;
+export function FileDetails({
+    pathParts,
+    details,
+}: {
+    pathParts: string[];
+    details: FileStats;
+}) {
+    return (
+        <FileBox>
+            <Path parts={pathParts} />
+            <Property name="Name">{details.name}</Property>
+            <Property name="Type">{details.type}</Property>
+            <Property name="Size">
+                <Size size={details.size} folder={details.type === 'folder'} />
+            </Property>
+        </FileBox>
+    );
+}

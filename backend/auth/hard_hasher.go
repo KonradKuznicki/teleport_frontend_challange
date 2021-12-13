@@ -5,8 +5,9 @@ import (
 	"crypto/subtle"
 	"encoding/base64"
 	"fmt"
-	"golang.org/x/crypto/argon2"
 	"strings"
+
+	"golang.org/x/crypto/argon2"
 )
 
 type HardHasher struct {
@@ -70,5 +71,6 @@ func NewHardHasher() *HardHasher {
 		memory:  64 * 1024,
 		keyLen:  32,
 		saltLen: 16,
-		threads: 4}
+		threads: 4,
+	}
 }

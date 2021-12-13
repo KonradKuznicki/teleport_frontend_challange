@@ -5,7 +5,6 @@ import (
 )
 
 func StaticsHandler(writer http.ResponseWriter, request *http.Request) {
-
 	fs := http.FileServer(http.Dir("../frontend/login-build"))
 	http.StripPrefix("/login", fs).ServeHTTP(writer, request)
 	// 	writer.Header().Add("content-type", "text/html")

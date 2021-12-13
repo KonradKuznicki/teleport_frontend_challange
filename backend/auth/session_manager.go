@@ -58,7 +58,7 @@ func (m *SessionManager) Destroy(token string) {
 func (m *SessionManager) invalidate(token string) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	m.invalidTokens[token] = time.Now() //TODO: garbage collect
+	m.invalidTokens[token] = time.Now() // TODO: garbage collect
 }
 
 func (m *SessionManager) isInvalidated(token string) bool {

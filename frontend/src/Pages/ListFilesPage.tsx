@@ -1,10 +1,15 @@
-import { Page, Title } from '../general/Elements';
+import { Page } from '../general/Elements';
 import { PageHead } from '../Files/PageHead';
 import { FilesList, FileStats } from '../Files/FileList';
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useFetch } from '../API/useFetch';
-import { Alert } from '../general/Alert';
+import React, { useState } from 'react';
+import { format } from '../Files/Size';
+
+function compare(a: any, b: any) {
+    if (typeof a === 'string') {
+        return a.localeCompare(b);
+    }
+    return a - b;
+}
 
 export function ListFilesPage({
     files,
@@ -13,57 +18,31 @@ export function ListFilesPage({
     path: string[];
     files: FileStats[];
 }) {
-    console.log(files, path);
+    const [search, onSearch] = useState('');
+    const [sortBy, setSortBy] = useState('');
+
+    const ls = search.toLowerCase();
+    const filteredFiles = files.filter(
+        (i) =>
+            i.name.toLowerCase().includes(ls) ||
+            i.type.toLowerCase().includes(ls) ||
+            (i.type === 'folder' ? '--' : format(i.size))
+                .toLowerCase()
+                .includes(ls),
+    );
+    if (sortBy) {
+        filteredFiles.sort((a: any, b: any) => compare(a[sortBy], b[sortBy]));
+    }
+
     return (
         <Page>
-            <PageHead />
-            <FilesList path={path} files={files} />
+            <PageHead onSearch={onSearch} />
+            <FilesList
+                path={path}
+                files={filteredFiles}
+                sortBy={sortBy}
+                onSort={setSortBy}
+            />
         </Page>
-    );
-}
-
-function NotFound() {
-    return (
-        <Page>
-            <Alert type="danger">
-                <Title>Page not found</Title>
-                <Link to={'/files'}>Go back to known files</Link>
-            </Alert>
-        </Page>
-    );
-}
-export function ListFilesRouteablePage() {
-    const params = useLocation();
-    const path = params.pathname;
-    if (path.indexOf('/files') !== 0) {
-        return <NotFound />;
-    }
-    return <ListFilesLoadablePage path={path.substring(7)} />;
-}
-
-export function ListFilesLoadablePage({ path }: { path: string }) {
-    const { data, isLoading, isError } = useFetch<FileStats[]>(
-        'https://localhost:3001/API/v1/files/' + path,
-    );
-    if (isError) {
-        return (
-            <Page>
-                <Alert type="danger">{isError}</Alert>
-            </Page>
-        );
-    }
-    if (isLoading) {
-        return (
-            <Page>
-                <Alert type="info">Please wait loading...</Alert>
-            </Page>
-        );
-    }
-
-    return (
-        <ListFilesPage
-            files={data as FileStats[]}
-            path={path.split('/').filter((i) => i)}
-        />
     );
 }

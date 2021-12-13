@@ -1,15 +1,16 @@
 package auth_test
 
 import (
-	"challenge/auth"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"challenge/auth"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestStaticsHandler(t *testing.T) {
+	t.Parallel()
 	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
 	// pass 'nil' as the third parameter.
 	req, err := http.NewRequest("GET", "/login", nil)
@@ -28,5 +29,4 @@ func TestStaticsHandler(t *testing.T) {
 	assert.Equal(t, rr.Code, http.StatusOK)
 
 	assert.Contains(t, rr.Body.String(), "login form")
-
 }

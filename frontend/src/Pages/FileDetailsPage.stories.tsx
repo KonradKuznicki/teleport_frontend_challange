@@ -1,27 +1,23 @@
 import React from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
-import { Page, theme } from '../general/Elements';
-import { FileDetails } from '../Files/FileDetails';
-import { FileDetailsPageHead } from '../Files/FileDetailsPageHead';
-
-
-function FilePage(props: any) {
-    return <Page style={{ display: 'table-cell' }} {...props}>
-        <FileDetailsPageHead />
-        <FileDetails />
-    </Page>;
-}
+import { theme } from '../general/Elements';
+import { FileDetailsPage } from './FileDetailsPage';
 
 export default {
     title: 'Pages/FileDetailsPage',
-    component: FilePage,
-} as ComponentMeta<typeof FilePage>;
+    component: FileDetailsPage,
+} as ComponentMeta<typeof FileDetailsPage>;
 
-const Template: ComponentStory<typeof FilePage> = (args) => <ThemeProvider
-    theme={theme}><FilePage {...args} /></ThemeProvider>;
+const Template: ComponentStory<typeof FileDetailsPage> = (args) => (
+    <ThemeProvider theme={theme}>
+        <FileDetailsPage {...args} />
+    </ThemeProvider>
+);
 
 export const Default = Template.bind({});
 
-Default.args = { isError: false };
-
+Default.args = {
+    pathParts: ['docs'],
+    details: { name: 'notes.txt', size: 123, type: 'pdf' },
+};

@@ -20,15 +20,15 @@ func ServeTLS(mux *http.ServeMux, certFile string, keyFile string) {
 			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
 			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
 
-			//tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-			//tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
+			// tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			// tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
 		},
 	}
 	srv := &http.Server{
 		Addr:         ":3001",
 		Handler:      mux,
 		TLSConfig:    cfg,
-		TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler), 0),
+		TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler)),
 	}
 	err := srv.ListenAndServeTLS(certFile, keyFile)
 	if err != nil {

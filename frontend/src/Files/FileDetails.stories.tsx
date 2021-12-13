@@ -9,12 +9,19 @@ export default {
     component: FileDetails,
 } as ComponentMeta<typeof FileDetails>;
 
-const Template: ComponentStory<typeof FileDetails> = () => (
+const Template: ComponentStory<typeof FileDetails> = (args) => (
     <ThemeProvider theme={theme}>
-        <FileDetails />
+        <FileDetails {...args} />
     </ThemeProvider>
 );
 
 export const Default = Template.bind({});
 
-Default.args = {};
+Default.args = {
+    pathParts: ['docs', 'images'],
+    details: {
+        size: 110330,
+        type: 'pdf',
+        name: 'some dokument.pdf',
+    },
+};

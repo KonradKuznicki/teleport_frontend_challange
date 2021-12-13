@@ -61,7 +61,7 @@ func (a *Auth) LoginHandler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	url := RedirectFromCookie(writer, request, err)
+	url := RedirectFromCookie(writer, request)
 
 	http.SetCookie(writer, &http.Cookie{
 		Name:     "auth",
@@ -80,7 +80,7 @@ func (a *Auth) LoginHandler(writer http.ResponseWriter, request *http.Request) {
 	http.Error(writer, string(marshal), http.StatusOK)
 }
 
-func RedirectFromCookie(writer http.ResponseWriter, request *http.Request, err error) string {
+func RedirectFromCookie(writer http.ResponseWriter, request *http.Request) string {
 	cookieName := "redirectTo"
 	cookie, err := request.Cookie(cookieName)
 	if err != nil && !errors.Is(err, http.ErrNoCookie) {
@@ -161,7 +161,6 @@ func (a *Auth) GetUser(login string, pass string) (User, error) {
 
 func (a *Auth) CreateUser(login string, pass string) error {
 	hash, err := a.hasher.Hash(pass)
-
 	if err != nil {
 		return err
 	}

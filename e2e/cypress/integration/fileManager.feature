@@ -8,8 +8,19 @@ Feature: File Manager
     When I open file manager
     Then I see 4 files
 
-  Scenario: go to foler
+  Scenario: go to folder
     Given I open file manager
     When I click images
     Then I see than I am in images folder
     And I see 2 files
+
+  Scenario: open non nested files
+    Given I open file manager
+    When I click notes.txt
+    Then I see notes.txt file details
+
+  Scenario: search files
+    Given I open file manager
+    When search for notes
+    Then I see notes.txt in the body
+    And I see 1 files

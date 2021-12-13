@@ -36,11 +36,10 @@ func (e *AESEncryptor) Decrypt(token string) (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("%s", plaintext), nil
+	return string(plaintext), nil
 }
 
 func (e *AESEncryptor) Encrypt(confidential string) (string, error) {
-
 	key, _ := hex.DecodeString(e.pass)
 	plaintext := []byte(confidential)
 
