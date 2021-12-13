@@ -1,13 +1,14 @@
 package files_test
 
 import (
-	"challenge/files"
 	"testing"
 
+	"challenge/files"
 	"github.com/stretchr/testify/suite"
 )
 
 func TestFileManager(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(TestFileManagerSuite))
 }
 
@@ -72,5 +73,4 @@ func (s *TestFileManagerSuite) TestFileManager_listPathAlternatives() {
 	s.Equal(folder, folder3)
 	folder4, _ := s.FileManager.ListFolder("////")
 	s.Equal(folder, folder4)
-
 }

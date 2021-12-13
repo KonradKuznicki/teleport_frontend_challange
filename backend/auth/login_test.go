@@ -2,9 +2,10 @@ package auth_test
 
 import (
 	"bytes"
-	"challenge/auth"
 	"encoding/json"
 	"net/http"
+
+	"challenge/auth"
 )
 
 func (s *TestAuthSuite) TestLogin_handleCorrectCreds() {

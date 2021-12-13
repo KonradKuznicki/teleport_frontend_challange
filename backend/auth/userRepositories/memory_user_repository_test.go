@@ -1,14 +1,15 @@
 package userRepositories_test
 
 import (
-	"challenge/auth"
-	"challenge/auth/userRepositories"
 	"testing"
 
+	"challenge/auth"
+	"challenge/auth/userRepositories"
 	"github.com/stretchr/testify/suite"
 )
 
 func TestInMemoryUserRepository(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(TestInMemoryUserRepositorySuite))
 }
 
@@ -22,7 +23,6 @@ func (s *TestInMemoryUserRepositorySuite) SetupSuite() {
 }
 
 func (s *TestInMemoryUserRepositorySuite) TearDownSuite() {
-
 }
 
 func (s *TestInMemoryUserRepositorySuite) TestInMemoryUserRepository() {

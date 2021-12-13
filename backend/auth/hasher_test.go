@@ -1,26 +1,27 @@
-package auth
+package auth_test
 
 import (
 	"testing"
 
+	"challenge/auth"
 	"github.com/stretchr/testify/suite"
 )
 
 func TestEasyHash(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(TestEasyHashSuite))
 }
 
 type TestEasyHashSuite struct {
 	suite.Suite
-	EasyHash *EasyHash
+	EasyHash *auth.EasyHash
 }
 
 func (s *TestEasyHashSuite) SetupSuite() {
-	s.EasyHash = NewEasyHash("salt")
+	s.EasyHash = auth.NewEasyHash("salt")
 }
 
 func (s *TestEasyHashSuite) TearDownSuite() {
-
 }
 
 func (s *TestEasyHashSuite) TestEasyHash() {

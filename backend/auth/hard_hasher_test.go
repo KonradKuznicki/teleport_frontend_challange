@@ -1,13 +1,14 @@
 package auth_test
 
 import (
-	"challenge/auth"
 	"testing"
 
+	"challenge/auth"
 	"github.com/stretchr/testify/suite"
 )
 
 func TestHardHasher(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(TestHardHasherSuite))
 }
 
@@ -21,7 +22,6 @@ func (s *TestHardHasherSuite) SetupSuite() {
 }
 
 func (s *TestHardHasherSuite) TearDownSuite() {
-
 }
 
 func (s *TestHardHasherSuite) TestHardHasher() {

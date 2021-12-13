@@ -1,15 +1,17 @@
 package auth_test
 
 import (
-	"challenge/auth"
 	"encoding/hex"
 	"fmt"
-	"github.com/stretchr/testify/suite"
 	"testing"
 	"time"
+
+	"challenge/auth"
+	"github.com/stretchr/testify/suite"
 )
 
 func TestSession(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(TestSessionSuite))
 }
 
@@ -23,7 +25,6 @@ func (s *TestSessionSuite) SetupSuite() {
 }
 
 func (s *TestSessionSuite) TearDownSuite() {
-
 }
 
 func (s *TestSessionSuite) TestSession() {
@@ -56,8 +57,7 @@ func (s *TestSessionSuite) TestSession_destroyedSession() {
 
 /// mocks
 
-type MockEncryptor struct {
-}
+type MockEncryptor struct{}
 
 func (m MockEncryptor) Decrypt(token string) (string, error) {
 	decodeString, err := hex.DecodeString(token)
